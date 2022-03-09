@@ -16,19 +16,19 @@ import java.time.Duration;
 public class Client
 {
 	RemoteRecordingStream rs;
-			
+
 	public static void main(String[] args) throws Exception
 	{
-		Client c =  new Client();
+		Client c = new Client();
 		c.initRemoteJfrConnection();
-		for(;;)
+		for (;;)
 		{
 			IGreeter greeter = c.GetGreeter();
 			System.out.println(greeter.Greet());
 			Thread.sleep(4000);
 		}
 	}
-	
+
 	public void initRemoteJfrConnection() throws Exception
 	{
 		String url = "service:jmx:rmi:///jndi/rmi://" + Server.JMX_HOST + ":" + Server.JMX_PORT + "/jmxrmi";
@@ -38,7 +38,7 @@ public class Client
 
 		MBeanServerConnection conn = c.getMBeanServerConnection();
 		rs = new RemoteRecordingStream(conn);
-	
+
 		rs.enable("jdk.GCPhasePause").withoutThreshold();
 		rs.enable("jdk.CPULoad").withPeriod(Duration.ofSeconds(1));
 		rs.enable("jdk.ThreadStart");
@@ -49,7 +49,7 @@ public class Client
 		rs.startAsync();
 
 	}
-	
+
 	public IGreeter GetGreeter()
 	{
 		try
